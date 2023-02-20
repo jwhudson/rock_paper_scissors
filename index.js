@@ -1,8 +1,10 @@
 function playRound(playerSelection, computerSelection)
 {
     computerChoice = getComputerChoice();
-    playerChoice = getplayerChoice();
+    playerChoice = getPlayerChoice();
     roundWinner = roundResult(playerChoice, computerChoice);
+    console.log(computerChoice);
+    console.log(playerChoice);
     console.log(roundWinner);
 }
 
@@ -29,18 +31,23 @@ function getComputerChoice()
 function getPlayerChoice()
 {
     input = prompt("Enter a choice: (rock/paper/scissors): ");
+    input = formatInput(input);
     validInput = validateInput(input);
-
-    while(!ValidInput)
+    
+    while(!validInput)
     {
         console.log("Sorry that isn't valid input.");
         input = prompt("Enter a choice: (rock/paper/scissors): ");
+        input = formatInput(input);
         validInput = validateInput(input);
     }
+    
+    return input;
 }
 
 function validateInput(input)
 {
+    
     if(input == "rock" || input === "paper" || input === "scissors")
     {
         return true;
@@ -51,15 +58,21 @@ function validateInput(input)
     }
 }
 
+function formatInput(input)
+{
+    output = input.toLowerCase();
+    return output;
+}
+
 function roundResult(playerSelection, computerSelection)
 {
     if(playerSelection === computerSelection)
     {
         return "draw";
     }
-    else if ((playerSelection === "rock" && computerSelection === "scissor") ||
+    else if ((playerSelection === "rock" && computerSelection === "scissors") ||
              (playerSelection === "paper" && computerSelection === "rock") ||
-             (playerSelection === "scissor" && computerSelection === "paper"))
+             (playerSelection === "scissors" && computerSelection === "paper"))
     {
         return "player";
     }
@@ -68,3 +81,7 @@ function roundResult(playerSelection, computerSelection)
         return "computer";
     }
 }
+
+
+
+playRound();
