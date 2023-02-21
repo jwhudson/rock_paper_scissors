@@ -1,24 +1,30 @@
-function playRound()
+let playerScore = 0;
+let computerScore = 0;
+
+async function playRound(playerChoice)
 {
-    welcomeMessage();
-    playerScore = 0;
-    computerScore = 0;
-    while(!isGameOver(playerScore, computerScore))
+    playerChoice = playerMove(playerChoice.className);
+    console.log(playerChoice);
+    computerChoice = getComputerChoice();
+    roundWinner = roundResult(playerChoice, computerChoice);
+    declareRoundWinner(roundWinner);
+    if(roundWinner === "player")
     {
-        computerChoice = getComputerChoice();
-        playerChoice = getPlayerChoice();
-        roundWinner = roundResult(playerChoice, computerChoice);
-        declareRoundWinner(playerChoice, computerChoice, roundWinner);
-        if(roundWinner === "player")
-        {
-            playerScore += 1;
-        }
-        if(roundWinner === "computer")
-        {
-            computerScore += 1;
-        }
+        playerScore += 1;
     }
-    gameResults(playerScore, computerScore);
+    if(roundWinner === "computer")
+    {
+        computerScore += 1;
+    }
+    updateGameScore(playerScore, computerScore);
+    if(isGameOver(playerScore, computerScore))
+    {
+        await gameResults(playerScore, computerScore);
+        playerScore = 0;
+        computerScore = 0;
+        welcomeMessage();
+    }
+    
 }
 
 function getComputerChoice()
@@ -41,40 +47,10 @@ function getComputerChoice()
     return output;
 }
 
-function getPlayerChoice()
+function playerMove(inputString)
 {
-    input = prompt("Enter a choice: (rock/paper/scissors): ");
-    input = formatInput(input);
-    validInput = validateInput(input);
-    
-    while(!validInput)
-    {
-        console.log("Sorry that isn't valid input.");
-        input = prompt("Enter a choice: (rock/paper/scissors): ");
-        input = formatInput(input);
-        validInput = validateInput(input);
-    }
-    
-    return input;
-}
-
-function validateInput(input)
-{
-    
-    if(input == "rock" || input === "paper" || input === "scissors")
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-function formatInput(input)
-{
-    output = input.toLowerCase();
-    return output;
+    let inputArr = inputString.split(" ");
+    return inputArr[1];
 }
 
 function roundResult(playerSelection, computerSelection)
@@ -95,30 +71,29 @@ function roundResult(playerSelection, computerSelection)
     }
 }
 
-function declareRoundWinner(playerChoice, computerChoice, roundWinner)
+function declareRoundWinner(roundWinner)
 {
-
-    console.log("The computer chose: " + computerChoice);
-    console.log("You chose: " + playerChoice);
-
-    if(roundWinner === "draw")
+    if(roundWinner == "computer")
     {
-        console.log("This round was a draw!");
+        gameText.textContent = gameMessages(5);
     }
-    else if (roundWinner === "player")
+    else if(roundWinner == "player")
     {
-        console.log("You won this round!");
+        gameText.textContent = gameMessages(4);
     }
     else
     {
-        console.log("The computer wins this round!");
+        gameText.textContent = gameMessages(6);
     }
 }
 
-function welcomeMessage()
+async function welcomeMessage()
 {
-    console.log("Welcome to Rock, Paper, Scissors!");
-    console.log("You'll be up agaisnt the computer, first one to win five rounds wins!");
+    gameText.textContent = gameMessages(1);
+    await justASecond();
+    gameText.textContent = gameMessages(2);
+    await justASecond();
+    gameText.textContent = gameMessages(3);
 }
 
 function isGameOver(playerScore, computerScore)
@@ -133,18 +108,70 @@ function isGameOver(playerScore, computerScore)
     }
 }
 
-function gameResults(playerScore, computerScore)
+async function gameResults(playerScore, computerScore)
 {
-    console.log("The game is over!");
     if(playerScore > computerScore)
     {
-        console.log("You win!");
+        gameText.textContent = gameMessages(7);
+        await justASecond();
     }
     else
     {
-        console.log("Computer wins!");
+        gameText.textContent = gameMessages(8);
+        await justASecond();
     }
-    console.log("Final score: " + playerScore + " - " + computerScore);
 }
-// playRound();
+
+async function justASecond()
+{
+    await new Promise(resolve => setTimeout(resolve, 3000));
+}
+
+
+const buttons = document.querySelectorAll(".player-side .box");
+const gameText = document.querySelector(".game-text");
+const gameScore = document.querySelector(".game-score");
+
+function updateGameScore(playerScore, computerScore)
+{
+    let outputMessage = `${playerScore} - ${computerScore}`;
+    gameScore.textContent = outputMessage;
+}
+
+function gameMessages(lastAction)
+{
+    let outputMessage = "";
+    switch(lastAction) {
+        case 1:
+            outputMessage = "Welcome to Rock, Paper, Scissors!";
+            break;
+        case 2:
+            outputMessage = "You'll be up against the computer. First to 5 wins!";
+            break;
+        case 3:
+            outputMessage = "Make your choice..";
+            break;
+        case 4:
+            outputMessage = "You won that round!";
+            break;
+        case 5:
+            outputMessage = "Computer wins this round..";
+            break;
+        case 6:
+            outputMessage = "It's a draw";
+            break;
+        case 7:
+            outputMessage = "You won that game!";
+            break;
+        case 8:
+            outputMessage = "Computer wins the game..";
+            break;
+    }
+    return outputMessage;
+}
+
+buttons.forEach((button) => {
+    button.addEventListener('click', function() { playRound(this)});
+});
+
 
