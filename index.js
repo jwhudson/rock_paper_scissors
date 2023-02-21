@@ -1,5 +1,16 @@
+const buttons = document.querySelectorAll(".player-side .box");
+const gameText = document.querySelector(".game-text");
+const gameScore = document.querySelector(".game-score");
+
+buttons.forEach((button) => {
+    button.addEventListener('click', function() { playRound(this)});
+});
+
+
 let playerScore = 0;
 let computerScore = 0;
+
+welcomeMessage();
 
 async function playRound(playerChoice)
 {
@@ -24,7 +35,6 @@ async function playRound(playerChoice)
         computerScore = 0;
         welcomeMessage();
     }
-    
 }
 
 function getComputerChoice()
@@ -89,6 +99,7 @@ function declareRoundWinner(roundWinner)
 
 async function welcomeMessage()
 {
+    gameScore.textContent = "0 - 0";
     gameText.textContent = gameMessages(1);
     await justASecond();
     gameText.textContent = gameMessages(2);
@@ -126,11 +137,6 @@ async function justASecond()
 {
     await new Promise(resolve => setTimeout(resolve, 3000));
 }
-
-
-const buttons = document.querySelectorAll(".player-side .box");
-const gameText = document.querySelector(".game-text");
-const gameScore = document.querySelector(".game-score");
 
 function updateGameScore(playerScore, computerScore)
 {
@@ -170,8 +176,5 @@ function gameMessages(lastAction)
     return outputMessage;
 }
 
-buttons.forEach((button) => {
-    button.addEventListener('click', function() { playRound(this)});
-});
 
 
