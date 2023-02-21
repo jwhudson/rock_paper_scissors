@@ -146,4 +146,5 @@ function gameResults(playerScore, computerScore)
     }
     console.log("Final score: " + playerScore + " - " + computerScore);
 }
-playRound();
+// playRound();
+
